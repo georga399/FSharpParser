@@ -2,11 +2,11 @@ import typing
 
 class FParserTable:
 
-    def SetText(text:str) -> dict:
+    def SetText(text:str):
         pass
 
-    def GetOperators():
+    def GetOperators() -> dict:
         pass
 
-    def GetOperands():
+    def GetOperands() -> dict:
         pass
