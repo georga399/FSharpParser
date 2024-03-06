@@ -17,7 +17,8 @@ class FParserTable:
         stream = CommonTokenStream(lexer)
         parser = TokenizeParser(stream)
         tree = parser.exprs()
-        visitor = FVisitor(self._operators, self._operands)
+        indexMap = parser.ruleNames
+        visitor = FVisitor(self._operators, self._operands, indexMap)
         visitor.visit(tree)
 
     def GetOperators(self) -> dict:     
