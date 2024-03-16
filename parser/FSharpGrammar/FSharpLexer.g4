@@ -9,9 +9,11 @@ FLOAT: [0-9]+'.'[0-9]+ ('f'|'m')?;
 
 INTERPOLATIONSIGN: ('%s'|'%d'|'%f'|'%c');
 
-CHAR: '\'' (ESC | ~[\n\t\r .]) '\'' ;
+CHAR: '\''(~[\\']|'\\'['"nt\\]|'\\u'[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])'\'';
 
-ESC: '\\' [0-9]{3} | '\\' 'u' [0-9a-zA-Z]{4} ;
+STRING: DOUBLE_QUOTES (~[\\"]|'\\'[\\"'unt])* DOUBLE_QUOTES;
+
+INTERPOLATED_STRING: DOLLAR STRING;
 
 BOOL: ('true' | 'false');
 
@@ -115,6 +117,8 @@ USE: 'use';
 
 USING: 'using';
 
+WHEN: 'when';
+
 EXCEPTION: 'exception';
 
 OF: 'of';
@@ -207,7 +211,6 @@ ELSE: 'else';
 
 VERTICAL_LINE: '|';
 
-NEWLINE: '\n';
-
-
 IDENTIFIER: [a-zA-Z_0-9][a-zA-Z_0-9]*;
+
+SINGLE_CHARACTER: [.];
