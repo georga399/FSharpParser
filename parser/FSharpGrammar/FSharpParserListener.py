@@ -1,4 +1,4 @@
-# Generated from FSharpParser.g4 by ANTLR 4.13.1
+# Generated from FSharpGrammar/FSharpParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 if "." in __name__:
     from .FSharpParser import FSharpParser
@@ -104,6 +104,15 @@ class FSharpParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by FSharpParser#string.
     def exitString(self, ctx:FSharpParser.StringContext):
+        pass
+
+
+    # Enter a parse tree produced by FSharpParser#interpolated_string.
+    def enterInterpolated_string(self, ctx:FSharpParser.Interpolated_stringContext):
+        pass
+
+    # Exit a parse tree produced by FSharpParser#interpolated_string.
+    def exitInterpolated_string(self, ctx:FSharpParser.Interpolated_stringContext):
         pass
 
 
@@ -509,6 +518,15 @@ class FSharpParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by FSharpParser#new.
     def exitNew(self, ctx:FSharpParser.NewContext):
+        pass
+
+
+    # Enter a parse tree produced by FSharpParser#when.
+    def enterWhen(self, ctx:FSharpParser.WhenContext):
+        pass
+
+    # Exit a parse tree produced by FSharpParser#when.
+    def exitWhen(self, ctx:FSharpParser.WhenContext):
         pass
 
 

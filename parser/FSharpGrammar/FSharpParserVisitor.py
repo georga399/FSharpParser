@@ -1,4 +1,4 @@
-# Generated from FSharpParser.g4 by ANTLR 4.13.1
+# Generated from FSharpGrammar/FSharpParser.g4 by ANTLR 4.13.1
 from antlr4 import *
 if "." in __name__:
     from .FSharpParser import FSharpParser
@@ -61,6 +61,11 @@ class FSharpParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by FSharpParser#string.
     def visitString(self, ctx:FSharpParser.StringContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by FSharpParser#interpolated_string.
+    def visitInterpolated_string(self, ctx:FSharpParser.Interpolated_stringContext):
         return self.visitChildren(ctx)
 
 
@@ -286,6 +291,11 @@ class FSharpParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by FSharpParser#new.
     def visitNew(self, ctx:FSharpParser.NewContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by FSharpParser#when.
+    def visitWhen(self, ctx:FSharpParser.WhenContext):
         return self.visitChildren(ctx)
 
 

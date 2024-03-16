@@ -29,11 +29,17 @@ class FVisitor(FSharpParserVisitor):
         self.addNameOperand(name)
         return super().visitDotIentifier(ctx)
     
-    def visitString(self, ctx: FSharpParser.StringContext):
+    def visitString(self, ctx: FSharpParser.StringContext): #TODO: FIND interpolation signs ('%s'|'%d'|'%f'|'%c')
         name = ctx.getText()
         self.addNameOperand(name)
+        
         return super().visitString(ctx)
     
+    def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext): #TODO FIND brackets
+        name = ctx.getText()
+        self.addNameOperand(name)
+        return super().visitInterpolated_string(ctx)
+
     def visitChar(self, ctx: FSharpParser.CharContext):
         name = ctx.getText()
         self.addNameOperand(name)

@@ -25,7 +25,9 @@ interpolationSign: INTERPOLATIONSIGN; // don't add to expr
 
 dollar: DOLLAR; //don't add
 
-string: dollar? DOUBLE_QUOTES ((OPEN_BRACE expression CLOSE_BRACE)|interpolationSign | CHAR)* DOUBLE_QUOTES;
+string: STRING;
+
+interpolated_string: INTERPOLATED_STRING;
 
 attribute: OPEN_BRACKET LESS dotIentifier GREATER CLOSE_BRACKET;
 
@@ -117,6 +119,8 @@ class: CLASS expression+ END;
 do: DO;
 
 new: NEW expression;
+
+when: WHEN;
 
 // then: THEN;
 
@@ -279,7 +283,9 @@ expression: dotIentifier
             |abstract
             |base
             |colon_q
+            |interpolated_string
             |interface
+            |when
             ;
 
 exprs: expression* EOF;
