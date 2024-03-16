@@ -1,193 +1,8 @@
-grammar Tokenize;
-
-WHITE_SPACE: [ \t\r\n]+ -> skip ;
-COMMENT:( ('//'.*?([\n]| EOF))  | ('(*' .*? '*)') )-> skip ;
-
-IDENTIFIER: [a-zA-Z_0-9]+ ;
-
-INT: [0-9]+('uy'|'y'|'s'|'us'|'u'|'L')?;
-
-FLOAT: [0-9]+'.'[0-9]+ ('f'|'m')?;
-
-INTERPOLATIONSIGN: ('%s'|'%d'|'%f'|'%c');
-
-CHAR: '\'' (ESC | ~[\n\t\r .]) '\'' ;
-
-ESC: '\\' [0-9]{3} | '\\' 'u' [0-9a-zA-Z]{4} ;
-
-BOOL: 'true' | 'false';
-
-UNIT: '(' ' '* ')';
-
-REC: 'rec';
-
-PUBLIC: 'public';
-
-PRIVATE: 'private';
-
-INTERNAL: 'internal';
-
-MUTABLE: 'mutable';
-
-LET: 'let';
-
-FUN: 'fun';
-
-WHILE: 'while';
-
-DO: 'do';
-
-FOR: 'for';
-
-TO: 'to';
-
-DOWNTO: 'downto';
-
-IN: 'in';
-
-DOLLAR: '$';
-
-TYPE: 'type';
-
-MODULE: 'module';
-
-OPEN: 'open';
-
-NAMESPACE: 'namespace';
-
-CLASS: 'class';
-
-END: 'end';
-
-STRUCT: 'struct';
-
-WITH_AND: 'and';
-
-INTERFACE: 'interface';
-
-GET: 'get';
-
-INHERIT: 'inherit';
-
-OVERRIDE: 'override';
-
-DEFAULT: 'default';
-
-ABSTRACT: 'abstract';
-
-BASE: 'base';
-
-ASYNC: 'async';
-
-TASK: 'task';
-
-NEW: 'new';
-
-THEN: 'then';
-
-THIS: 'this';
-
-MEMBER: 'member';
-
-SEQ: 'seq';
-
-MAP: 'Map';
-
-SET: 'set';
-
-RAISE: 'raise';
-
-RERAISE: 'reraise';
-
-FAILWITH: 'failwith';
-
-INVALIDARG: 'invalidArg';
-
-VAL: 'val';
-
-TRY: 'try';
-
-FINALLY: 'finally';
-
-MATCH: 'match';
-
-WITH: 'with';
-
-USE: 'use';
-
-USING: 'using';
-
-EXCEPTION: 'exception';
-
-OF: 'of';
-
-DOT: '.';
-
-DOTDOT: '..';
-
-EXCLAMATION_MARK: '!';
-
-COMMA: ',';
-
-SEMICOLON: ';';
-
-COLON: ':';
-
-ASSIGN: '<-';
-
-PIPE: '|>';
-
-MISSING_ARG: '_';
-
-RIGHT_ARROW: '->';
-
-COMPOS: '>>';
-
-ADD: '+';
-
-MINUS: '-';
-
-MUL: '*';
-
-DIV: '/';
-
-POW: '**';
-
-MOD: '%';
-
-EQUAL: '=';
-
-NOT_EQUAL: '<>';
-
-LESS: '<';
-
-GREATER: '>';
-
-LESS_EQUAL: '<=';
-
-GREATER_EQUAL: '>=';
-
-AND:'&&';
-
-OR:'||';
-
-LSHIFT: '<<<';
-
-RSHIFT: '>>>';
-
-LOG_MUL: '&&&';
-
-LOG_ADD: '|||';
-
-LOG_XOR: '^^^';
-
-LOG_NOT: '~~~';
-
-NOT: 'not';
-
-COLON_Q: ':?';
-
-
+parser grammar FSharpParser;
+
+options {
+    tokenVocab=FSharpLexer;
+}
 
 // rules
 dot:DOT;
@@ -210,11 +25,11 @@ interpolationSign: INTERPOLATIONSIGN; // don't add to expr
 
 dollar: DOLLAR; //don't add
 
-string: dollar? '"' (('{'expression '}')|interpolationSign | CHAR)* '"';
+string: dollar? DOUBLE_QUOTES ((OPEN_BRACE expression CLOSE_BRACE)|interpolationSign | CHAR)* DOUBLE_QUOTES;
 
-attribute: '[' '<' dotIentifier '>' ']';
+attribute: OPEN_BRACKET LESS dotIentifier GREATER CLOSE_BRACKET;
 
-round_brackets: '(' expression+ ')';
+round_brackets: OPEN_PAREN expression+ CLOSE_PAREN;
 
 rec: REC;
 
@@ -234,9 +49,9 @@ fun_type: dotIentifier (RIGHT_ARROW dotIentifier)+;
 
 typezation: COLON (round_brackets|dotIentifier);
 
-if_then_elif_else: 'if' expression+ 'then' expression+ 
-    ('elif' expression+ 'then' expression+)*
-    ('else' expression)?;
+if_then_elif_else: IF expression+ THEN expression+ 
+    (ELIF expression+ THEN expression+)*
+    (ELSE expression)?;
 
 while_do: WHILE expression+ DO; 
 
@@ -289,13 +104,13 @@ compos: COMPOS;
 
 assign: ASSIGN;
 
-type: TYPE expression+ EQUAL expression;
+type: TYPE expression+ EQUAL;
 
-module: MODULE dotIentifier;
+module: MODULE;
 
 open: OPEN dotIentifier;
 
-namespace: NAMESPACE dotIentifier;
+namespace: NAMESPACE ;
 
 class: CLASS expression+ END;
 
@@ -303,30 +118,30 @@ do: DO;
 
 new: NEW expression;
 
-then: THEN;
+// then: THEN;
 
-seq: SEQ '{' expression+ (SEMICOLON expression+)* '}';
+seq: SEQ OPEN_BRACE expression+ (SEMICOLON expression+)* CLOSE_BRACE;
 
-list: '[' expression+ (SEMICOLON expression+)*']';
+list: OPEN_BRACKET expression+ (SEMICOLON expression+)* CLOSE_BRACKET;
 
-array: '[|' expression+ (SEMICOLON expression+)*'|]';
+array: OPEN_BRACKET VERTICAL_LINE expression+ (SEMICOLON expression+)* VERTICAL_LINE CLOSE_BRACKET;
 
-map: MAP '[' expression+ COMMA expression+ (SEMICOLON expression+ COMMA expression+)* ']';
+map: MAP OPEN_BRACKET expression+ COMMA expression+ (SEMICOLON expression+ COMMA expression+)* CLOSE_BRACKET;
 
 generator: (INT|FLOAT) DOTDOT (INT|FLOAT) ((DOTDOT) (INT|FLOAT))?;
 
 set: SET expression;
 
-async_rule: ASYNC '{' expression* '}' ;
+async_rule: ASYNC OPEN_BRACE expression* CLOSE_BRACE;
 
-task: TASK '{' expression* '}' ;
+task: TASK OPEN_BRACE expression* CLOSE_BRACE;
 
 exclamation_mark: EXCLAMATION_MARK;
 
 match_with: MATCH expression+ WITH
-('|' expression+ RIGHT_ARROW expression+ '\n')+;
+(VERTICAL_LINE expression+ RIGHT_ARROW expression+)+;
 
-try_with_finally: TRY expression* (WITH ('|' expression* RIGHT_ARROW expression*)*)? 
+try_with_finally: TRY expression* (WITH (VERTICAL_LINE expression* RIGHT_ARROW expression*)*)? 
    (FINALLY expression)?; 
 
 use: USE expression* EQUAL expression;
@@ -353,15 +168,15 @@ with_get_set: (WITH ((private|internal|public)? GET UNIT EQUAL expression)
     (AND ((private|internal|public)? SET expression* EQUAL expression)?) 
     | (WITH (private|internal|public)? expression* EQUAL expression));
 
-tuple: '(' expression (COMMA expression)+ ')';
+tuple: OPEN_PAREN expression (COMMA expression)+ CLOSE_PAREN;
 
 with: WITH;
 
-record: '{' (((expression COLON dotIentifier) *)| (expression* with expression*))'}';
+record: OPEN_BRACE (((expression COLON dotIentifier) *)| (expression* with expression*)) CLOSE_BRACE;
 
 of:OF;
 
-enum: ('|' dotIentifier (equal|of) dotIentifier)+;
+enum: (VERTICAL_LINE dotIentifier (equal|of) dotIentifier)+;
 
 inherit: INHERIT;
 
@@ -432,7 +247,7 @@ expression: dotIentifier
             |class
             |do
             |new
-            |then
+            // |then
             |seq
             |generator
             |list
