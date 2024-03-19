@@ -24,6 +24,8 @@ import json
 
 import gi
 
+import parser.FParserTable
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import GLib, Gio, Gtk, Gdk, GObject, Pango
 
@@ -300,19 +302,12 @@ class EditorWindow(Gtk.ApplicationWindow):
         if current_contents:
             try:
                 current_contents = current_contents.encode()
-                self.file.replace_contents(current_contents,
-                                           None,
-                                           False,
-                                           Gio.FileCreateFlags.NONE,
-                                           None)
+                self.file.replace_contents(current_contents, None, False, Gio.FileCreateFlags.NONE, None)
             except GObject.GError as e:
                 self.file = None
         else:
             try:
-                self.file.replace_readwrite(None,
-                                            False,
-                                            Gio.FileCreateFlags.NONE,
-                                            None)
+                self.file.replace_readwrite(None, False, Gio.FileCreateFlags.NONE, None)
             except GObject.GError as e:
                 self.file = None
         return self.set_file(self.file)
@@ -540,33 +535,38 @@ class EditorWindow(Gtk.ApplicationWindow):
         dialog.destroy()
 
     def parse_callback(self, action, parameter):
-        """HERE IS FPARSE COMES"""
+        parser_table = parser.FParserTable.FParserTable()
+        buf = self.textview.get_buffer()
+        parser_table.SetText(
+            text=buf.get_text(start=buf.get_start_iter(), end=buf.get_end_iter(), include_hidden_chars=False))
 
-        dialog = Gtk.MessageDialog()
-        dialog.set_transient_for(self)
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO,
-                                   Gtk.ButtonsType.OK, "Table Dialog")
-        # create a table
-        table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=True)
-        # add some labels to the table
-        label1 = Gtk.Label(label="Label 1")
-        label2 = Gtk.Label(label="Label 2")
-        label3 = Gtk.Label(label="Label 3")
-        label4 = Gtk.Label(label="Label 4")
-        table.attach(label1, 0, 1, 0, 1)
-        table.attach(label2, 1, 2, 0, 1)
-        table.attach(label3, 0, 1, 1, 2)
-        table.attach(label4, 1, 2, 1, 2)
-        # add the table to the dialog's content area
-        content_area = dialog.get_content_area()
-        content_area.add(table)
-        # show the dialog
-        dialog.show_all()
+        window = Gtk.Window()
+        window.set_title("FParser Table")
+        window.connect("destroy", Gtk.main_quit)
 
-        # to close the dialog when "close" is clicked, e.g. on RPi,
-        # we connect the "response" signal to about_response_callback
-        dialog.connect("response", self.about_response_callback)
-        dialog.show()
+        # Create a table to hold the labels
+        table = Gtk.Table(5, 2, True)
+        window.add(table)
+
+        # Add labels for the operator dictionary
+        row = 0
+        for operator, info in parser_table.GetOperators().items():
+            label_operator = Gtk.Label(operator)
+            label_info = Gtk.Label(info)
+            table.attach(label_operator, 0, 1, row, row + 1)
+            table.attach(label_info, 1, 2, row, row + 1)
+            row += 1
+
+        # Add labels for the operand dictionary
+        for operand, info in parser_table.GetOperands().items():
+            label_operand = Gtk.Label(operand)
+            label_info = Gtk.Label(info)
+            table.attach(label_operand, 0, 1, row, row + 1)
+            table.attach(label_info, 1, 2, row, row + 1)
+            row += 1
+
+        # Show the window and start the GTK main loop
+        window.show_all()
 
 
 class EditorApplication(Gtk.Application):
@@ -625,6 +625,7 @@ def _(string):
     return app.get_text(string)
 
 
-app = EditorApplication()
-exit_status = app.run(sys.argv)
-sys.exit(exit_status)
+if __name__ == "__main__":
+    app = EditorApplication()
+    exit_status = app.run(sys.argv)
+    sys.exit(exit_status)
