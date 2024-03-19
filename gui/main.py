@@ -541,15 +541,26 @@ class EditorWindow(Gtk.ApplicationWindow):
             text=buf.get_text(start=buf.get_start_iter(), end=buf.get_end_iter(), include_hidden_chars=False))
 
         window = Gtk.Window()
+        window.set_default_size(1000, 500)
         window.set_title("FParser Table")
         window.connect("destroy", Gtk.main_quit)
 
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        window.add(scrolled_window)
+
         # Create a table to hold the labels
         table = Gtk.Table(5, 2, True)
-        window.add(table)
+        scrolled_window.add(table)
+
+        row = 0
+
+        label_tmp = Gtk.Label()
+        label_tmp.set_markup("<b>Operators:</b>")
+        table.attach(label_tmp, 0, 1, row, row + 1)
+        row += 1
 
         # Add labels for the operator dictionary
-        row = 0
         for operator, info in parser_table.GetOperators().items():
             label_operator = Gtk.Label(operator)
             label_info = Gtk.Label(info)
@@ -557,6 +568,10 @@ class EditorWindow(Gtk.ApplicationWindow):
             table.attach(label_info, 1, 2, row, row + 1)
             row += 1
 
+        label_tmp = Gtk.Label()
+        label_tmp.set_markup("<b>Operands:</b>")
+        table.attach(label_tmp, 0, 1, row, row + 1)
+        row += 1
         # Add labels for the operand dictionary
         for operand, info in parser_table.GetOperands().items():
             label_operand = Gtk.Label(operand)
