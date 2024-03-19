@@ -1,3 +1,4 @@
+import re
 from FSharpGrammar.FSharpParser import FSharpParser
 from FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor 
 
@@ -17,22 +18,29 @@ class FVisitor(FSharpParserVisitor):
             self._operators[name] += 1
         return super().visitChildren(node)
 
-    def addNameOperand(self, name:str):
+    def addNameOperand(self, name:str, count = 1):
         val = self._operands.get(name)
         if val is None:
-            self._operands[name] = 1
+            self._operands[name] = count
         else:
-            self._operands[name] += 1 
+            self._operands[name] += count 
 
     def visitDotIentifier(self, ctx: FSharpParser.DotIentifierContext):
         name = ctx.getText()
         self.addNameOperand(name)
         return super().visitDotIentifier(ctx)
     
-    def visitString(self, ctx: FSharpParser.StringContext): #TODO: FIND interpolation signs ('%s'|'%d'|'%f'|'%c')
+    def visitString(self, ctx: FSharpParser.StringContext): 
         name = ctx.getText()
         self.addNameOperand(name)
-        
+        interpolationSign_s = len(re.findall('%s', name))
+        interpolationSign_d = len(re.findall('%d', name))
+        interpolationSign_f = len(re.findall('%f', name))
+        interpolationSign_c = len(re.findall('%c', name))
+        self.addNameOperand('%s', interpolationSign_s)
+        self.addNameOperand('%d', interpolationSign_d)
+        self.addNameOperand('%f', interpolationSign_f)
+        self.addNameOperand('%c', interpolationSign_c)
         return super().visitString(ctx)
     
     def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext): #TODO FIND brackets
