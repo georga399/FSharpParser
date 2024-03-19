@@ -1,8 +1,8 @@
 import re
-from FSharpGrammar.FSharpLexer import FSharpLexer
-from FSharpGrammar.FSharpParser import FSharpParser
+from parser.FSharpGrammar.FSharpLexer import FSharpLexer
+from parser.FSharpGrammar.FSharpParser import FSharpParser
 from antlr4 import InputStream, CommonTokenStream
-from FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor 
+from parser.FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor
 
 class FVisitor(FSharpParserVisitor):
     """Class to define behavior of visit tree."""
