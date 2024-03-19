@@ -1,5 +1,5 @@
 "simple string"
-$"{interpolated} string {1} {2} {3}"
+$"{if true then interpolated} string {1} {2} {3}"
 
 'f' 'a' '4' '\t' '\n'
 
