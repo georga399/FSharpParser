@@ -8,10 +8,16 @@ class FParserTable:
     """Class to get dictionary of operators and operands of F# code."""
 
     def __init__(self):
+        self._rules = {}
         self._operators = {}
+        self._rem_list = ['exprs', 'expression', 
+                          'string', 'dotIentifier', 
+                          'interpolated_string', 
+                          'char', 'int', 'float', 'dot']
         self._operands = {}
 
-    def SetText(self, text: str):
+
+    def SetText(self, text:str):
         """Set text for parsing."""
         self.text = text
         in_stream = InputStream(text)
@@ -20,13 +26,19 @@ class FParserTable:
         parser = FSharpParser(stream)
         tree = parser.exprs()
         indexMap = parser.ruleNames
-        visitor = FVisitor(self._operators, self._operands, indexMap)
+        visitor = FVisitor(self._rules, self._operands, indexMap)
         visitor.visit(tree)
+        self._operators = {key: self._rules[key] 
+             for key in self._rules if key not in self._rem_list}
+
+    def getRules(self) -> dict:
+        """Get dictionary of rules"""
+        return self._rules
 
     def GetOperators(self) -> dict:
         """Get dictionary of operators."""
         return self._operators
 
     def GetOperands(self) -> dict:
-        """Get dictionary of type of rules (operands)."""
+        """Get dictionary of operands."""
         return self._operands
