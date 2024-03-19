@@ -1,5 +1,5 @@
 "simple string"
-$"{if true then interpolated} string {1} {2} {3}"
+$"{if true then interpolated} string {if true then exampleOfInterpolation}"
 
 'f' 'a' '4' '\t' '\n'
 
