@@ -1,6 +1,6 @@
-from parser.FVisitor import FVisitor
-from parser.FSharpGrammar.FSharpLexer import FSharpLexer
-from parser.FSharpGrammar.FSharpParser import FSharpParser
+from FVisitor import FVisitor
+from FSharpGrammar.FSharpLexer import FSharpLexer
+from FSharpGrammar.FSharpParser import FSharpParser
 from antlr4 import InputStream, CommonTokenStream
 
 
@@ -13,7 +13,7 @@ class FParserTable:
         self._rem_list = ['exprs', 'expression', 
                           'string', 'dotIentifier', 
                           'interpolated_string', 
-                          'char', 'int', 'float', 'dot']
+                          'char', 'int', 'float', "identifier"]
         self._operands = {}
 
 

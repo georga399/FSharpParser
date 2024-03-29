@@ -5,4 +5,4 @@ $"{}"
 
 '9' '\u0123'
 
-"string %d %s %f %s"
+"string %i %d %s %f %s"

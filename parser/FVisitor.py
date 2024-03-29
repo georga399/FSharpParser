@@ -1,8 +1,8 @@
 import re
-from parser.FSharpGrammar.FSharpLexer import FSharpLexer
-from parser.FSharpGrammar.FSharpParser import FSharpParser
+from FSharpGrammar.FSharpLexer import FSharpLexer
+from FSharpGrammar.FSharpParser import FSharpParser
 from antlr4 import InputStream, CommonTokenStream
-from parser.FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor
+from FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor
 
 class FVisitor(FSharpParserVisitor):
     """Class to define behavior of visit tree."""
@@ -35,11 +35,16 @@ class FVisitor(FSharpParserVisitor):
         else:
             self._operators[name] += count
         
-    def visitDotIentifier(self, ctx: FSharpParser.DotIentifierContext):
+    # def visitDotIentifier(self, ctx: FSharpParser.DotIentifierContext):
+    #     name = ctx.getText()
+    #     self.addNameOperand(name)
+    #     return super().visitDotIentifier(ctx)
+    
+    def visitIdentifier(self, ctx: FSharpParser.IdentifierContext):
         name = ctx.getText()
         self.addNameOperand(name)
-        return super().visitDotIentifier(ctx)
-    
+        return super().visitIdentifier(ctx)
+
     def visitString(self, ctx: FSharpParser.StringContext): 
         name = ctx.getText()
         self.addNameOperand(name)
@@ -47,13 +52,15 @@ class FVisitor(FSharpParserVisitor):
         interpolationSign_d = len(re.findall('%d', name))
         interpolationSign_f = len(re.findall('%f', name))
         interpolationSign_c = len(re.findall('%c', name))
+        interpolationSign_i = len(re.findall('%i', name))
         self.addNameOperator('%s', interpolationSign_s)
         self.addNameOperator('%d', interpolationSign_d)
         self.addNameOperator('%f', interpolationSign_f)
         self.addNameOperator('%c', interpolationSign_c)
+        self.addNameOperator('%i', interpolationSign_i)
         return super().visitString(ctx)
 
-    def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext):  # TODO FIND brackets
+    def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext):  
         name = ctx.getText()
         self.addNameOperand(name)
         self.addNameOperator('$')

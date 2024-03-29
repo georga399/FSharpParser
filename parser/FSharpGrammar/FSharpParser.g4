@@ -7,7 +7,9 @@ options {
 // rules
 dot:DOT;
 
-dotIentifier: IDENTIFIER (dot IDENTIFIER)*;
+identifier: IDENTIFIER;
+
+dotIentifier: identifier (dot identifier)*;
 
 int: INT;
 
