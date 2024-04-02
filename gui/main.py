@@ -1,26 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2019  Esrille Inc.
-#
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, see <http://www.gnu.org/licenses/>.
-
 import os
 import sys
 import time
 import locale
 import json
+from math import log2
 
 import gi
 
@@ -580,8 +563,92 @@ class EditorWindow(Gtk.ApplicationWindow):
             table.attach(label_info, 1, 2, row, row + 1)
             row += 1
 
+        button = Gtk.Button(label="Open Holsted Metrics")
+        button.connect("clicked", self.open_holsted_metrics)
+
+        # Attach the button to the table
+        table.attach(button, 0, 2, row, row + 1)
+
         # Show the window and start the GTK main loop
         window.show_all()
+
+    def open_holsted_metrics(self, button):
+        parser_table = parser.FParserTable.FParserTable()
+        buf = self.textview.get_buffer()
+        parser_table.SetText(
+            text=buf.get_text(start=buf.get_start_iter(), end=buf.get_end_iter(), include_hidden_chars=False))
+
+        metrics_window = Gtk.Window()
+        metrics_window.set_default_size(800, 600)
+        metrics_window.set_title("Holsted Metrics")
+        metrics_window.connect("destroy", Gtk.main_quit)
+
+        # Create a box to hold the metrics labels
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        metrics_window.add(box)
+
+        # Общее число операторов программы N1
+        N1 = 0
+        for operator in parser_table.GetOperators().values():
+            N1 += operator
+
+        # Общее число операндов программы N2
+        N2 = 0
+        for operand in parser_table.GetOperands().values():
+            N2 += operand
+
+        # Длина программы N
+        N = N1 + N2
+
+        # Число уникальных операторов программы(ɳ1)
+        n1 = len(parser_table.GetOperators().values())
+
+        # Число уникальных операндов программы(ɳ2)
+        n2 = len(parser_table.GetOperands().values())
+
+        # Словарь программы(ɳ)
+        n = n1 + n2
+
+        # Объем программы(V)
+        V = N * log2(n)
+
+        # Теоретическая длина программы (C)
+        С = (n1 * log2(n1)) + (n2 * log2(n2))
+
+        # Сложность программы
+        D = (n1 / 2) * (N2 / n2)
+
+        # Усилие для написания
+        E = D * V
+
+        # Время для программирования
+        T = E / 18
+
+        # Количество ожидаемых ошибок
+        B = V / 3000
+
+        # Create labels for each metric and add them to the box
+        metrics_labels = [
+            f"Общее число операторов программы (N1): {N1}",
+            f"Общее число операндов в программе (N2): {N2}",
+            f"Длина программы (N): {N}",
+            f"Число уникальных операторов программы (ɳ1): {n1}",
+            f"Число уникальных операндов программы (ɳ2): {n2}",
+            f"Cловарь программы (ɳ): {n}",
+            f"Объем программы (V): {V:.2f}",
+            f"Теоретическая длина программы (C): {С:.2f} - в идеале N > C не более 10%",
+            f"Сложность программы (D): {D:.2f}",
+            f"Усилие для написания (E): {E:.2f}",
+            f"Время для программирования (T): {T:.2f}",
+            f"Количество ожидаемых ошибок (B): {B:.5f}"
+        ]
+
+        for metric_label in metrics_labels:
+            label = Gtk.Label(label=metric_label)
+            box.pack_start(label, True, True, 0)
+
+        # Show the window and start the GTK main loop
+        metrics_window.show_all()
 
 
 class EditorApplication(Gtk.Application):

@@ -1,6 +1,6 @@
-from FVisitor import FVisitor
-from FSharpGrammar.FSharpLexer import FSharpLexer
-from FSharpGrammar.FSharpParser import FSharpParser
+from parser.FVisitor import FVisitor
+from parser.FSharpGrammar.FSharpLexer import FSharpLexer
+from parser.FSharpGrammar.FSharpParser import FSharpParser
 from antlr4 import InputStream, CommonTokenStream
 
 
@@ -10,14 +10,13 @@ class FParserTable:
     def __init__(self):
         self._rules = {}
         self._operators = {}
-        self._rem_list = ['exprs', 'expression', 
-                          'string', 'dotIentifier', 
-                          'interpolated_string', 
+        self._rem_list = ['exprs', 'expression',
+                          'string', 'dotIentifier',
+                          'interpolated_string',
                           'char', 'int', 'float', "identifier"]
         self._operands = {}
 
-
-    def SetText(self, text:str):
+    def SetText(self, text: str):
         """Set text for parsing."""
         self.text = text
         in_stream = InputStream(text)
@@ -28,8 +27,8 @@ class FParserTable:
         indexMap = parser.ruleNames
         visitor = FVisitor(self._rules, self._operands, indexMap)
         visitor.visit(tree)
-        self._operators = {key: self._rules[key] 
-             for key in self._rules if key not in self._rem_list}
+        self._operators = {key: self._rules[key]
+                           for key in self._rules if key not in self._rem_list}
 
     def getRules(self) -> dict:
         """Get dictionary of rules"""

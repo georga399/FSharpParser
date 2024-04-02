@@ -1,8 +1,8 @@
 import re
-from FSharpGrammar.FSharpLexer import FSharpLexer
-from FSharpGrammar.FSharpParser import FSharpParser
+from parser.FSharpGrammar.FSharpLexer import FSharpLexer
+from parser.FSharpGrammar.FSharpParser import FSharpParser
 from antlr4 import InputStream, CommonTokenStream
-from FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor
+from parser.FSharpGrammar.FSharpParserVisitor import FSharpParserVisitor
 
 class FVisitor(FSharpParserVisitor):
     """Class to define behavior of visit tree."""
@@ -39,7 +39,7 @@ class FVisitor(FSharpParserVisitor):
     #     name = ctx.getText()
     #     self.addNameOperand(name)
     #     return super().visitDotIentifier(ctx)
-    
+
     def visitIdentifier(self, ctx: FSharpParser.IdentifierContext):
         name = ctx.getText()
         self.addNameOperand(name)
@@ -60,7 +60,7 @@ class FVisitor(FSharpParserVisitor):
         self.addNameOperator('%i', interpolationSign_i)
         return super().visitString(ctx)
 
-    def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext):  
+    def visitInterpolated_string(self, ctx: FSharpParser.Interpolated_stringContext):
         name = ctx.getText()
         self.addNameOperand(name)
         self.addNameOperator('$')
