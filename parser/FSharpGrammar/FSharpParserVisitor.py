@@ -49,8 +49,8 @@ class FSharpParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by FSharpParser#missing_arg.
-    def visitMissing_arg(self, ctx:FSharpParser.Missing_argContext):
+    # Visit a parse tree produced by FSharpParser#underscore.
+    def visitUnderscore(self, ctx:FSharpParser.UnderscoreContext):
         return self.visitChildren(ctx)
 
 
@@ -76,6 +76,11 @@ class FSharpParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by FSharpParser#attribute.
     def visitAttribute(self, ctx:FSharpParser.AttributeContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by FSharpParser#generic.
+    def visitGeneric(self, ctx:FSharpParser.GenericContext):
         return self.visitChildren(ctx)
 
 
@@ -109,8 +114,13 @@ class FSharpParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by FSharpParser#let.
-    def visitLet(self, ctx:FSharpParser.LetContext):
+    # Visit a parse tree produced by FSharpParser#let_fun.
+    def visitLet_fun(self, ctx:FSharpParser.Let_funContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by FSharpParser#let_var.
+    def visitLet_var(self, ctx:FSharpParser.Let_varContext):
         return self.visitChildren(ctx)
 
 

@@ -80,12 +80,12 @@ class FSharpParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by FSharpParser#missing_arg.
-    def enterMissing_arg(self, ctx:FSharpParser.Missing_argContext):
+    # Enter a parse tree produced by FSharpParser#underscore.
+    def enterUnderscore(self, ctx:FSharpParser.UnderscoreContext):
         pass
 
-    # Exit a parse tree produced by FSharpParser#missing_arg.
-    def exitMissing_arg(self, ctx:FSharpParser.Missing_argContext):
+    # Exit a parse tree produced by FSharpParser#underscore.
+    def exitUnderscore(self, ctx:FSharpParser.UnderscoreContext):
         pass
 
 
@@ -131,6 +131,15 @@ class FSharpParserListener(ParseTreeListener):
 
     # Exit a parse tree produced by FSharpParser#attribute.
     def exitAttribute(self, ctx:FSharpParser.AttributeContext):
+        pass
+
+
+    # Enter a parse tree produced by FSharpParser#generic.
+    def enterGeneric(self, ctx:FSharpParser.GenericContext):
+        pass
+
+    # Exit a parse tree produced by FSharpParser#generic.
+    def exitGeneric(self, ctx:FSharpParser.GenericContext):
         pass
 
 
@@ -188,12 +197,21 @@ class FSharpParserListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by FSharpParser#let.
-    def enterLet(self, ctx:FSharpParser.LetContext):
+    # Enter a parse tree produced by FSharpParser#let_fun.
+    def enterLet_fun(self, ctx:FSharpParser.Let_funContext):
         pass
 
-    # Exit a parse tree produced by FSharpParser#let.
-    def exitLet(self, ctx:FSharpParser.LetContext):
+    # Exit a parse tree produced by FSharpParser#let_fun.
+    def exitLet_fun(self, ctx:FSharpParser.Let_funContext):
+        pass
+
+
+    # Enter a parse tree produced by FSharpParser#let_var.
+    def enterLet_var(self, ctx:FSharpParser.Let_varContext):
+        pass
+
+    # Exit a parse tree produced by FSharpParser#let_var.
+    def exitLet_var(self, ctx:FSharpParser.Let_varContext):
         pass
 
 

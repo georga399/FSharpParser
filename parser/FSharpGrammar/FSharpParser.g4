@@ -21,7 +21,7 @@ bool: BOOL;
 
 char: CHAR;
 
-missing_arg: MISSING_ARG;
+underscore: MISSING_ARG MISSING_ARG?;
 
 interpolationSign: INTERPOLATIONSIGN; // don't add to expr
 
@@ -33,7 +33,9 @@ interpolated_string: INTERPOLATED_STRING;
 
 attribute: OPEN_BRACKET LESS dotIentifier GREATER CLOSE_BRACKET;
 
-round_brackets: OPEN_PAREN expression+ CLOSE_PAREN;
+generic: LESS dotIentifier GREATER;
+
+round_brackets: OPEN_PAREN (expression+ COMMA?)+ CLOSE_PAREN;
 
 rec: REC;
 
@@ -45,7 +47,12 @@ internal: INTERNAL;
 
 mutable: MUTABLE;
 
-let: LET ;
+// let: LET ;
+
+let_fun: LET (mutable|internal|rec|public|private)* identifier (mutable|internal|rec|public|private)* ((identifier typezation?)|unit|round_brackets)+
+    typezation? equal expression;
+
+let_var: LET (mutable|internal|rec|public|private)* identifier typezation? (equal expression)?;
 
 fun: FUN expression+ RIGHT_ARROW expression;
 
@@ -126,13 +133,13 @@ when: WHEN;
 
 // then: THEN;
 
-seq: SEQ OPEN_BRACE expression+ (SEMICOLON expression+)* CLOSE_BRACE;
+seq: SEQ OPEN_BRACE expression+ (SEMICOLON? expression+)* CLOSE_BRACE;
 
-list: OPEN_BRACKET expression+ (SEMICOLON expression+)* CLOSE_BRACKET;
+list: OPEN_BRACKET expression+ (SEMICOLON? expression+)* CLOSE_BRACKET;
 
-array: OPEN_BRACKET VERTICAL_LINE expression+ (SEMICOLON expression+)* VERTICAL_LINE CLOSE_BRACKET;
+array: OPEN_BRACKET VERTICAL_LINE expression+ (SEMICOLON? expression+)* VERTICAL_LINE CLOSE_BRACKET;
 
-map: MAP OPEN_BRACKET expression+ COMMA expression+ (SEMICOLON expression+ COMMA expression+)* CLOSE_BRACKET;
+map: MAP OPEN_BRACKET expression+ COMMA expression+ (SEMICOLON? expression+ COMMA expression+)* CLOSE_BRACKET;
 
 generator: (INT|FLOAT) DOTDOT (INT|FLOAT) ((DOTDOT) (INT|FLOAT))?;
 
@@ -164,7 +171,7 @@ invalidArg: INVALIDARG;
 
 exception_of: EXCEPTION expression* OF expression;
 
-member: MEMBER (THIS|MISSING_ARG) dot dotIentifier+ equal expression;
+member: MEMBER (THIS|MISSING_ARG+) dot identifier (identifier|unit)* equal expression;
 
 val: VAL mutable? (internal|public|private)? dotIentifier COLON dotIentifier;
 
@@ -206,10 +213,13 @@ expression: dotIentifier
             |bool
             |char
             |unit
-            |missing_arg
+            |underscore
+            // |missing_arg
             |string
             |attribute
-            |let
+            |generic
+            |let_fun
+            |let_var
             |round_brackets
             |rec
             |public
